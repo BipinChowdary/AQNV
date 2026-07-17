@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AquaNavAI research showcase for forecast-aware coastal ASV mission planning." />
+    <title>AquaNavAI: Forecast-Aware Coastal ASV Mission Planning</title>
+    <link rel="icon" href="images/ping.png" type="image/png" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <canvas id="neural-network" aria-hidden="true"></canvas>
+    <div class="container">
+      <div class="name">
+        <a href="https://bipinchowdary.github.io/" target="_blank" rel="noopener noreferrer">Bipin Chowdary</a>
+      </div>
+      <button class="theme-toggle" type="button" aria-label="Switch to light theme" aria-pressed="false">
+        <span aria-hidden="true">☀</span>
+      </button>
+
+      <main>
+        <h1 class="main-title glass-effect">AquaNavAI: Forecast-Aware Coastal ASV Mission Planning</h1>
+
+        <section class="section" aria-labelledby="info-title">
+          <div class="info">
+            <h2 id="info-title">INFO</h2>
+            <p>AquaNavAI is a research demonstrator for coastal autonomous surface vehicle mission planning. It turns pinned environmental artifacts into a navigability grid, calculates four route objectives in the browser, and visualizes the selected route with an animated ASV. The supplied manuscript is a complete confidential draft that is explicitly marked not submitted; this page does not describe the work as published or operational.</p>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="problem-title">
+          <div class="info">
+            <h2 id="problem-title">RESEARCH PROBLEM</h2>
+            <p>Coastal route planning combines discrete search with bathymetric feasibility, time-varying modelled currents, vehicle assumptions, and data provenance. AquaNavAI studies how identical mission endpoints behave under distance, arrival-time, modelled-energy, and balanced objectives while keeping the evidence and limitations attached to the scenario.</p>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="workflow-title">
+          <div class="info">
+            <h2 id="workflow-title">SYSTEM WORKFLOW</h2>
+            <p>The controlled pipeline verifies source checksums, reprojects NOAA inputs, derives a shared 500 m analysis grid, calculates route artifacts, validates their contract, and exports the same release artifacts used by the Python evidence workflow and the static browser application.</p>
+            <div class="image-container glass-effect">
+              <img src="images/system-workflow.svg" alt="AquaNavAI architecture from pinned NOAA inputs through the evidence pipeline and browser route demonstration" />
+            </div>
+            <p class="caption">Verified architecture figure supplied with the AquaNavAI manuscript.</p>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="data-title">
+          <div class="info">
+            <h2 id="data-title">COASTAL DATA AND INPUTS</h2>
+            <ul>
+              <li>NOAA CUDEM Florida 1/9 arc-second topobathymetry is the v1 bathymetry and feasibility source; it is not a navigational chart.</li>
+              <li>NOAA Global RTOFS supplies modelled surface currents from one pinned 2026-07-12 00Z initialization, with ten released hourly departure times.</li>
+              <li>NDBC stations 41122 and LKWF1 provide contextual observations only; they do not validate the full spatial RTOFS current field.</li>
+              <li>NOAA ENC was provenance-audited for future chart constraints, but chart hazards and restrictions do not alter the released v1 mask. Wave forcing is deferred.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="objectives-title">
+          <div class="info">
+            <h2 id="objectives-title">ROUTE-PLANNING OBJECTIVES</h2>
+            <div class="table-wrap glass-effect">
+              <table>
+                <caption class="caption">Implemented objectives and their evidence boundaries</caption>
+                <thead>
+                  <tr><th scope="col">Objective</th><th scope="col">Method</th><th scope="col">Interpretation</th></tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">Shortest distance</th><td>Dijkstra</td><td>Geometric edge distance on the static feasible grid.</td></tr>
+                  <tr><th scope="row">Fastest arrival</th><td>Time-expanded A*</td><td>Current-aware transit time without waiting or forecast extrapolation.</td></tr>
+                  <tr><th scope="row">Lowest modelled energy</th><td>Time-expanded A*</td><td>Fixed reference-power proxy, not measured vessel energy.</td></tr>
+                  <tr><th scope="row">Balanced mission</th><td>Time-expanded A*</td><td>Weighted time, modelled energy, current exposure, and shallow-water context; not a safety score.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="image-container glass-effect">
+              <img src="images/route-objectives.svg" alt="Verified AquaNavAI comparison of shortest, fastest, lowest-modelled-energy, and balanced routes" />
+            </div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="demo-title">
+          <div class="info">
+            <h2 id="demo-title">NAVIGATION DEMONSTRATION</h2>
+            <p>The static application performs route calculation in a browser Web Worker, displays the four objective outcomes on a coastal map, and animates an ASV along the selected route. This recording uses the working public deployment, recalculates all four objectives, selects the balanced route, and starts the animation.</p>
+            <div class="video-container glass-effect">
+              <video controls autoplay muted loop playsinline poster="images/navigation-interface.png">
+                <source src="images/navigation-demo.webm" type="video/webm" />
+                Your browser does not support the demonstration video.
+              </video>
+              <img class="video-fallback" src="images/navigation-interface.png" alt="AquaNavAI browser interface showing route controls, a South Florida coastal map, and four route outcomes" hidden />
+            </div>
+            <p class="caption">Browser recording of the public AquaNavAI research demonstration. The page remains usable if video playback is unavailable.</p>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="results-title">
+          <div class="info">
+            <h2 id="results-title">RESULTS AND VERIFICATION</h2>
+            <p>The exploratory V1 release contains three fixed missions at ten valid times from one RTOFS initialization: 30 matched cases and 120 reconstructed routes across four planners. All 120 recorded route-constraint checks passed with zero discrete violations. These are verification outcomes for the released artifacts, not evidence that one planner is universally superior.</p>
+            <p>V1 uses a fixed 179.985 W power proxy, so modelled energy is proportional to transit time, and it contains no measured computation-time observations. A prospective V2 pre-acquisition gate passed 5 of 5 synthetic checks and 27 of 30 excluded-pilot comparisons; the criterion was not satisfied, confirmatory acquisition did not begin, and eligible confirmatory cycles, cases, and routes remained zero.</p>
+            <div class="image-container glass-effect">
+              <img src="images/navigation-interface.png" alt="Verified AquaNavAI interface with four route outcomes and research-use warning" />
+            </div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="limitations-title">
+          <div class="info">
+            <h2 id="limitations-title">LIMITATIONS</h2>
+            <p>The evidence covers one forecast initialization, three fixed missions, one region, and a 500 m grid. CUDEM is not an active chart, NDBC observations are insufficient for spatial current validation, and the system excludes waves, tides, traffic, regulations, uncertainty propagation, dynamic obstacles, collision avoidance, and calibrated vessel energy. The deterministic <em>south-florida-v1</em> proxy is a software fixture and is not represented as NOAA-derived. AquaNavAI is for research demonstration only and must not be used for navigation, vessel control, or operational mission planning.</p>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="links-title">
+          <div class="info">
+            <h2 id="links-title">PROJECT LINKS</h2>
+            <div class="link-list">
+              <a class="link-button glass-effect" href="https://aquanavai.pages.dev/" target="_blank" rel="noopener noreferrer">Open AquaNavAI demonstration</a>
+              <a class="link-button glass-effect" href="https://github.com/BipinChowdary/AquaNavAI" target="_blank" rel="noopener noreferrer">View source repository</a>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <div class="footer-text">Project By <a href="https://www.linkedin.com/in/bipin-chowdary8055/" target="_blank" rel="noopener noreferrer">Bipin Chowdary</a> All rights reserved till <span class="bow" id="hidden-icon">⋈</span></div>
+      <button class="scroll-top" type="button" aria-label="Scroll to top"><span aria-hidden="true">↑</span></button>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
